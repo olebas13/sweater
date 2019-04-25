@@ -1,9 +1,10 @@
 package com.olebas.sweater.controller;
 
 import com.olebas.sweater.domain.Message;
+import com.olebas.sweater.domain.User;
 import com.olebas.sweater.repository.MessageRepo;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,8 +31,11 @@ public class MainController {
     }
 
     @PostMapping("/main")
-    public String add(@RequestParam String text, @RequestParam String tag, Map<String, Object> model) {
-        Message message = new Message(text, tag);
+    public String add(
+            @AuthenticationPrincipal User user,
+            @RequestParam String text,
+            @RequestParam String tag, Map<String, Object> model) {
+        Message message = new Message(text, tag, user);
         messageRepo.save(message);
         Iterable<Message> messages = messageRepo.findAll();
         model.put("messages", messages);
