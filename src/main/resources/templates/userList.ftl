@@ -2,9 +2,6 @@
 
 <@c.page>
     List of users
-
-    <div><a href="/main">Back to messages</a></div>
-
     <table>
         <thead>
         <tr>
