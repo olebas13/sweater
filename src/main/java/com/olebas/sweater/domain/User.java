@@ -24,7 +24,6 @@ public class User implements UserDetails {
     private String password;
 
     @Transient
-    @NotBlank(message = "Password confirmation cannot be empty")
     private String confirmPassword;
 
     private boolean active;
