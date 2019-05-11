@@ -32,7 +32,7 @@
                 <label class="col-sm-2 col-form-label">Confirm Password:</label>
                 <div class="col-sm-6">
                     <input class="form-control ${(passwordConfirmError??)?string('is-invalid', '')}"
-                           type="password" name="confirmPassword" placeholder="Confirm Password"/>
+                           type="password" name="passwordConfirm" placeholder="Confirm Password"/>
                     <#if passwordConfirmError??>
                         <div class="invalid-feedback">
                             ${passwordConfirmError}
@@ -51,6 +51,14 @@
                         </div>
                     </#if>
                 </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="g-recaptcha" data-sitekey="6LeX9aIUAAAAAOERru2ay-rLQoymLHqzAKnI836m"></div>
+                <#if captchaError??>
+                    <div class="alert alert-danger" role="alert">
+                        ${captchaError}
+                    </div>
+                </#if>
             </div>
         </#if>
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
