@@ -3,6 +3,7 @@ package com.olebas.sweater.controller;
 import com.olebas.sweater.domain.Message;
 import com.olebas.sweater.domain.User;
 import com.olebas.sweater.repository.MessageRepo;
+import com.olebas.sweater.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
@@ -32,8 +30,13 @@ public class MainController {
     @Autowired
     private MessageRepo messageRepo;
 
+    @Autowired
+    private UserRepo userRepo;
+
     @Value("${upload.path}")
     private String uploadPath;
+
+
 
     @GetMapping("/")
     public String greeting(Map<String, Object> model) {
@@ -76,19 +79,6 @@ public class MainController {
         return "main";
     }
 
-    private void saveFile(@Valid Message message, @RequestParam("file") MultipartFile file) throws IOException {
-        if (file != null && !file.getOriginalFilename().isEmpty()) {
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
-            }
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFileName = uuidFile + "." + file.getOriginalFilename();
-            file.transferTo(new File(uploadPath + "/" + resultFileName));
-            message.setFilename(resultFileName);
-        }
-    }
-
     @GetMapping("/user-messages/{user}")
     public String userMessages(
             @AuthenticationPrincipal User currentUser,
@@ -98,6 +88,10 @@ public class MainController {
     ) {
         Set<Message> messages = user.getMessages();
 
+        model.addAttribute("userChannel", user);
+        model.addAttribute("subscriptionsCount", user.getSubscriptions().size());
+        model.addAttribute("subscribersCount", user.getSubscribers().size());
+        model.addAttribute("isSubscriber", user.getSubscribers().contains(currentUser));
         model.addAttribute("messages", messages);
         model.addAttribute("message", message);
         model.addAttribute("isCurrentUser", currentUser.equals(user));
@@ -127,4 +121,16 @@ public class MainController {
         return "redirect:/user-messages/" + user;
     }
 
+    public void saveFile(@Valid Message message, @RequestParam("file") MultipartFile file) throws IOException {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFileName = uuidFile + "." + file.getOriginalFilename();
+            file.transferTo(new File(uploadPath + "/" + resultFileName));
+            message.setFilename(resultFileName);
+        }
+    }
 }
