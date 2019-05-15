@@ -9,9 +9,8 @@
             </form>
         </div>
     </div>
-
     <#include "parts/messageEdit.ftl" />
-
+    <#include "parts/editForm.ftl" />
     <#include "parts/messageList.ftl" />
 
 </@c.page>
