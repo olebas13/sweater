@@ -16,7 +16,7 @@
                     <div class="card-body">
                         <div class="card-title">Subscriptions</div>
                         <h3 class="card-text">
-                            <a href="/user/subscribtions/${userChannel.id}/list">${subscriptionsCount}</a>
+                            <a href="/user/subscriptions/${userChannel.id}/list">${subscriptionsCount}</a>
                         </h3>
                     </div>
                 </div>
@@ -34,8 +34,7 @@
         </div>
     </div>
     <#if isCurrentUser>
-
-        <#include "parts/editForm.ftl" />
+        <#include "parts/editor.ftl" />
     </#if>
 
     <#include "parts/messageList.ftl" />
